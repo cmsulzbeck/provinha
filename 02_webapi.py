@@ -1,13 +1,10 @@
 from flask import Flask, jsonify
 from flask.globals import request
 from flask_restx import Resource, Api
-from six import print_
 from utils.csvToJson import csvToJson
 from models.idlike import IdLike
-import utils.sqlite_demo as sql
 import pandas as pd
 import os
-import json
 import sqlite3
 
 
@@ -22,14 +19,9 @@ caminho = f"{os.getcwd()}\\bases"
 residencias = pd.read_csv(f"{caminho}\\residencias.csv")
 media_preco = pd.read_csv(f"{caminho}\\media_preco.csv")
 
-@api.route('/hello')
-class HelloWorld(Resource):
-    def get(self):
-        return {'hello': 'world'}
-
-# Endpoint get de residencias
 @api.route('/residencias')
 class Residencias(Resource):
+    # Endpoint get de residencias
     def get(self):
        
         # Filtrando bases com parâmetro get passado por uri
@@ -43,45 +35,41 @@ class Residencias(Resource):
         # retornadno json na view da api
         return csvToJson(residencias_filtered)
 
+    # Endpoint post de residencias
     def post(self):
+        # Recebendo json do corpo da requisição
         data = request.get_json()
-        print(data)
 
         # persistindo dados na tabela idlike do banco de dados provinha.db
+        # Abrindo conexão com banco de dados
         conn = sqlite3.connect('provinha.db')
-        print('connecting to database')
 
+        # Inicializando cursor para execução de comandos
         c = conn.cursor()
-        print('creating cursor')
 
         # Inicializando objeto IdLike
         idlike = IdLike(data['id'], data['like'])
-        print('associating idlike object')
 
         # Verificando se id já existe no banco de daods
         c.execute("SELECT * FROM idlike where id = :id", {'id': idlike.id})
         conn.commit()
-        print('executing select')
-        result_sql = c.fetchone()
-        print('fetching results')
         
+        # Armazenando resultado do select para verificação de existência de registro
+        result_sql = c.fetchone()
+        
+        # Verificando existência de registro no banco de dados
         if result_sql is not None:
-            print('query failed')
             conn.close()
             return "Cannot insert into table, row already exists"
         else:
-            print('query succesfull')
             c.execute("INSERT INTO idlike VALUES (:id, :like)", {'id': idlike.id, 'like': idlike.like})
             conn.commit()
             conn.close()
             return jsonify(data)
 
-        
-        # print(idlike.id)
-        # print(idlike.like)
-
 @api.route('/preco-medio')
 class PrecoMedio(Resource):
+    # Endpoint get de preco-medio
     def get(self):
 
         # Filtrando bases com parâmetrto get passado por uri

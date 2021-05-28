@@ -1,8 +1,6 @@
 import pandas as pd
 import os
 
-from pandas.core import base
-
 # Importando bases
 caminho = os.getcwd() + "\\bases"
 
