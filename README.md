@@ -23,7 +23,7 @@ Tratamento de dados e backend para uma aplicação semelhante ao airbnb
 - IDE: Visual Studio Code
 - Banco de dados: SQLite
 - Teste de requisições: Postman
-- Linguagem de Programação: Python
+- Linguagem de Programação: Python (pandas, flask-restx e sqlite3)
 
 ## Dificuldades
 - Até agora não consegui fazer a terceira parte pedida no projeto (frontend), infelizmente não é meu forte e devido a demandas urgente no meu emprego atual não consegui obter tempo ainda para implementar a parte de frontend
